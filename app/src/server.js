@@ -85,7 +85,7 @@ app.get('/messages/:message', function (req, res) {
 	.then(search_response => {
 		console.log("hi"); 
 		res.status(500).send("something happened")
-	}
+	}); 
     // res.send("Hello "+req.params.message+"!");
 
     /*
