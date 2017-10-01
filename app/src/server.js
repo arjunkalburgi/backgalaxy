@@ -82,6 +82,7 @@ var getmap = function(key, map_results) {
 //your routes here
 app.get('/messages/:message', function (req, res) {
 	// search it in graph 
+	/*
 	got("https://learn-anything.xyz/api/maps/?q=" + encodeURI(req.params.message))
 	.then(search_response => {
 		var search_results = JSON.parse(search_response.body); 
@@ -136,8 +137,9 @@ app.get('/messages/:message', function (req, res) {
 		console.log("Search API Error");
 		console.log(search_error);
 	});
+	*/
 
-    res.send("Hello "+req.params.message+"!");
+    res.send("Helloo "+req.params.message+"!");
 
     /*
 	client.message(req.params.message, {})
