@@ -12,7 +12,7 @@ const templateresponse = {"message": "", "explore_terms": {}};
 */
 
 
-/*
+
 
 // funcs
 var getinfo = function(search_topic) {
@@ -76,16 +76,68 @@ var getmap = function(key, map_results) {
 
 	return map_terms
 }; 
-*/
+
 
 
 //your routes here
 app.get('/messages/:message', function (req, res) {
 	got("https://learn-anything.xyz/api/maps/?q=" + encodeURI(req.params.message))
 	.then(search_response => {
-		console.log("hi"); 
+		var search_results = JSON.parse(search_response.body); 
+		var obj; 
+		if (search_results.length == 0) {
+			res.send(noresponse);
+			return  
+		} else {
+			obj = search_results[0]; 
+		}
+		
+		got("https://learn-anything.xyz/api/maps/" + obj.id)
+		.then(map_response => {
+			// compile the results
+			var map_results = JSON.parse(map_response.body); 
+			var returnmessage = templateresponse; 
+			returnmessage.suggestions = ""; 
+			
+			let wikinode = map_results.nodes.find(o => o.category === 'wiki');
+			if (wikinode) {
+				returnmessage.message = "Find out more about " + obj.key + " here: " + wikinode.url;
+			} else {
+				returnmessage.message = obj.key + " is cool"
+			}
+
+			let preembednode = map_results.nodes.find(o => o.text === 'basics'); 
+			let embednode = preembednode.nodes.find(o => o.category === 'video');
+			if (embednode) {
+				returnmessage.embed.message = "Check out this video!"; 
+				returnmessage.embed.url = embednode.url; 
+			}
+
+			let suggestnodes = map_results.nodes.filter( o => o.category == 'mindmap' );
+			for (num in suggestnodes) { 
+				if (num == 0) {
+					returnmessage.suggestions = "Look up stuff about "
+				}
+				returnmessage.suggestions = returnmessage.suggestions + suggestnodes[num].text.trim() + ", "; 
+				// console.log(returnmessage.suggestions);  
+			}
+			
+			// send it back
+			console.log(returnmessage)
+			res.send(returnmessage); 
+			returnmessage = null
+
+		}).catch(search_error => {
+			console.log("Map API Error");
+			console.log(search_error);
+			res.status(500).send("something happened")
+		});
+
+	}).catch(search_error => {
+		console.log("Search API Error");
+		console.log(search_error);
 		res.status(500).send("something happened")
-	}); 
+	});
     // res.send("Hello "+req.params.message+"!");
 
     /*
