@@ -3,13 +3,13 @@ var app = express();
 // var got = require('got');
 
 // message stuff
-
-const {Wit, log} = require('node-wit');
-const client = new Wit({
-  accessToken: "F3GLVWDI3U5US6FNMO57X3JIFT7ASNZH"
-});
+/*
+// const {Wit, log} = require('node-wit');
+// const client = new Wit({
+//   accessToken: ""
+// });
 const templateresponse = {"message": "", "explore_terms": {}}; 
-
+*/
 
 
 /*
@@ -81,15 +81,13 @@ var getmap = function(key, map_results) {
 
 //your routes here
 app.get('/messages/:message', function (req, res) {
-    
+    res.send("Hello "+req.params.message+"!");
+    /*
 	client.message(req.params.message, {})
 	.then((raw_data) => {
 		// var data = JSON.stringify(raw_data)
 		// get search topic 
 		var search_topic = raw_data.entities.wikipedia_search_query[0].value
-    	res.send("Hello "+search_topic+"!");
-
-		/*
 		// search it in graph 
     	got("https://learn-anything.xyz/api/maps/?q=" + encodeURI(search_topic))
 		.then(search_response => {
@@ -146,11 +144,10 @@ app.get('/messages/:message', function (req, res) {
 			console.log("Search API Error");
 			console.log(search_error);
 		});
-		*/
 	})
 	.catch(console.error);
 
-    
+    */
 });
 
 app.get('/', function (req, res) {
