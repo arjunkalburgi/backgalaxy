@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-// var got = require('got');
+var got = require('got');
 
 // message stuff
 /*
@@ -81,7 +81,13 @@ var getmap = function(key, map_results) {
 
 //your routes here
 app.get('/messages/:message', function (req, res) {
-    res.send("Hello "+req.params.message+"!");
+	got("https://learn-anything.xyz/api/maps/?q=" + encodeURI(req.params.message))
+	.then(search_response => {
+		console.log("hi"); 
+		res.status(500).send("something happened")
+	}
+    // res.send("Hello "+req.params.message+"!");
+
     /*
 	client.message(req.params.message, {})
 	.then((raw_data) => {
