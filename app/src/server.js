@@ -13,16 +13,19 @@ var got = require('got');
 const templateresponse = {"message": "", "explore_terms": {}}; 
 const noresponse = {"message": "Sorry I don't know about that yet. Try Google, they're a little smarter :)", "explore_terms": {}}; 
 
-var getdesc = function(map_results) {
-	let wikinode = map_results.nodes.find(o => o.category === 'wiki');
-	if (wikinode) {
-		return "lol bruh, or nah: " + wikinode.url;
-	} else {
-		return obj.key + " is cool"
-	}
+// function x(map results)
+// {}
+
+// var label = x()
+
+function getdesc(map_results) {
+
+
+	// console.log("hello:\n"+description+"\n:hello"); 
+	// return description
 }
 
-var getmap = function(key, map_results) {
+function getmap(key, map_results) {
 	var map_terms = {"parent": "", "key": "", graph: []}; 
 
 	// up
@@ -49,7 +52,7 @@ var getmap = function(key, map_results) {
 			left = preembednode.curve.y; 
 		}
 
-		console.log({"name": item.text.trim(), "place": {"top": top, "left": left}})
+		// console.log({"name": item.text.trim(), "place": {"top": top, "left": left}})
 
 		map_terms.graph.push(
 			{"name": item.text.trim(), "place": {"top": top, "left": left}}
@@ -79,14 +82,33 @@ app.get('/messages/:message', function (req, res) {
 		.then(map_response => {
 			// compile the results
 			var map_results = JSON.parse(map_response.body); 
-			var returnmessage = templateresponse; 
-			
-			returnmessage.message = getdesc(map_results); 
-			returnmessage.explore_terms = getmap(obj.key, map_results); 
-			
-			// send it back
-			res.send(returnmessage); 
-			// console.log(returnmessage)
+
+			// get desc			
+			let wikinode = map_results.nodes.find(o => o.category === 'wiki');
+			if (wikinode) {
+				got("http://tools.buzzstream.com/metaDataService?url=" + encodeURI(wikinode.url))
+				.then(metadata_response => {
+					var data = JSON.parse(metadata_response.body); 
+
+
+					var returnmessage = templateresponse; 
+					returnmessage.explore_terms = getmap(obj.key, map_results); 
+					returnmessage.message = data.description + "\n\n(GALAXY to explore this)"
+
+
+
+					res.send(returnmessage); 
+				}).catch(metadata_error => {
+					console.log("metadata API Error");
+					console.log(metadata_error);
+					returnmessage.message = "lol bruh, or nah: " + wikinode.url;
+					res.send(returnmessage); 
+				});
+			} else {
+				returnmessage.message = obj.key + " is cool"; 
+				res.send(returnmessage); 
+			}
+
 			returnmessage = null
 
 		}).catch(search_error => {
