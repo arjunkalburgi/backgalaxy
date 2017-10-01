@@ -1,6 +1,6 @@
-var express = require('express');
-var app = express();
-var got = require('got');
+let express = require('express');
+let app = express();
+let got = require('got');
 
 // message stuff
 /*
@@ -16,7 +16,7 @@ const noresponse = {"message": "Sorry I don't know about that yet. Try Google, t
 // function x(map results)
 // {}
 
-// var label = x()
+// let label = x()
 
 function getdesc(map_results) {
 
@@ -26,10 +26,10 @@ function getdesc(map_results) {
 }
 
 function getmap(key, map_results) {
-	var map_terms = {"parent": "", "key": "", graph: []}; 
+	let map_terms = {"parent": "", "key": "", graph: []}; 
 
 	// up
-	var listofparents = map_results.title.split(" - "); 
+	let listofparents = map_results.title.split(" - "); 
 	map_terms.parent = listofparents[listofparents.length - 2]
 
 	// curr
@@ -39,11 +39,11 @@ function getmap(key, map_results) {
 	let suggestnodes = map_results.nodes.filter( o => o.category == 'mindmap' );
 
 	for (num in suggestnodes) { 
-		var item = suggestnodes[num]; 
+		let item = suggestnodes[num]; 
 
 		// get node in connections
 		let preembednode = map_results.connections.find(o => o.target === item.text.trim());
-		var top, left; 
+		let top, left; 
 		if (preembednode.curve.x < 0) {
 			top = preembednode.curve.x*-1; 
 			left = preembednode.curve.y*-1; 
@@ -66,8 +66,8 @@ function getmap(key, map_results) {
 app.get('/messages/:message', function (req, res) {
 	got("https://learn-anything.xyz/api/maps/?q=" + encodeURI(req.params.message))
 	.then(search_response => {
-		var search_results = JSON.parse(search_response.body); 
-		var obj; 
+		let search_results = JSON.parse(search_response.body); 
+		let obj; 
 		if (search_results.length == 0) {
 			res.send(noresponse);
 			return  
@@ -81,17 +81,17 @@ app.get('/messages/:message', function (req, res) {
 		got("https://learn-anything.xyz/api/maps/" + obj.id)
 		.then(map_response => {
 			// compile the results
-			var map_results = JSON.parse(map_response.body); 
+			let map_results = JSON.parse(map_response.body); 
 
 			// get desc			
 			let wikinode = map_results.nodes.find(o => o.category === 'wiki');
 			if (wikinode) {
 				got("http://tools.buzzstream.com/metaDataService?url=" + encodeURI(wikinode.url))
 				.then(metadata_response => {
-					var data = JSON.parse(metadata_response.body); 
+					let data = JSON.parse(metadata_response.body); 
 
 
-					var returnmessage = templateresponse; 
+					let returnmessage = templateresponse; 
 					returnmessage.explore_terms = getmap(obj.key, map_results); 
 					returnmessage.message = data.description + "\n\n(GALAXY to explore this)"
 
