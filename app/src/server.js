@@ -68,9 +68,9 @@ app.get('/messages/:message', function (req, res) {
 		if (search_results.length == 0) {
 			res.send(noresponse);
 			return  
-		} else if {
+		// } else if {
 			// exact match
-			obj = search_results.find(o => o.key === req.params.message);
+			// obj = search_results.find(o => o.key === req.params.message);
 		} else {
 			obj = search_results[0]; // key n id
 		}
