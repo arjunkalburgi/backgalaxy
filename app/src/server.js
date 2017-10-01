@@ -2,6 +2,11 @@ var express = require('express');
 var app = express();
 
 //your routes here
+app.get('/messages', function (req, res) {
+    res.send("Hello World!");
+});
+
+//your routes here
 app.get('/', function (req, res) {
     res.send("Hello World!");
 });
