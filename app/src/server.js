@@ -11,50 +11,7 @@ var got = require('got');
 */
 
 const templateresponse = {"message": "", "explore_terms": {}}; 
-
-
-
-// funcs
-// var getinfo = function(search_topic) {
-// 	got("https://learn-anything.xyz/api/maps/?q=" + encodeURI(search_topic))
-// 		.then(search_response => {
-// 			var search_results = JSON.parse(search_response.body); 
-// 			var obj; 
-// 			if (search_results.length == 0) {
-// 				res.send(noresponse);
-// 				return  
-// 			} else {
-// 				obj = search_results[0]; // key n id
-// 			}
-			
-// 			got("https://learn-anything.xyz/api/maps/" + obj.id)
-// 			.then(map_response => {
-// 				// compile the results
-// 				var map_results = JSON.parse(map_response.body); 
-// 				var returnmessage = templateresponse; 
-				
-// 				returnmessage.message = getdesc(map_results); 
-// 				returnmessage.explore_terms = getmap(obj.key, map_results); 
-				
-// 				// send it back
-// 				res.write(returnmessage); 
-// 				res.end();
-// 				console.log("HIHIHI"); 
-// 				// console.log(returnmessage)
-// 				returnmessage = null
-
-// 			}).catch(search_error => {
-// 				console.log("Map API Error");
-// 				console.log(search_error);
-// 				res.status(500).send("something happened")
-// 			});
-
-// 		}).catch(search_error => {
-// 			console.log("Search API Error");
-// 			res.status(500).send("something happened")
-// 			console.log(search_error);
-// 		});
-// }; 
+const noresponse = {"message": "Sorry I don't know about that yet. Try Google, they're a little smarter :)", "explore_terms": {}}; 
 
 var getdesc = function(map_results) {
 	let wikinode = map_results.nodes.find(o => o.category === 'wiki');
@@ -66,23 +23,8 @@ var getdesc = function(map_results) {
 }
 
 var getmap = function(key, map_results) {
-	// console.log(map_results); 
 	var map_terms = {"parent": "", "key": "", graph: []}; 
-	// var map_terms = {"top": [], "curr": [], "bot": []}; 
 
-/*
-"connections":
-[{"source":"organisms","target":"cells  ️","curve":{"x":49.6074,"y":80.9159}},
-{"source":"organisms","target":"sex  ️","curve":{"x":109.171,"y":82.0384}},
-{"source":"organisms","target":"plants  ️","curve":{"x":-25.319,"y":81.7774}},
-{"source":"organisms","target":"immune system  ️","curve":{"x":-121.382,"y":82.8285}}]
-,"key":"organisms"}
-
-{"name": "cells", "place": {top: 49.6074, left: 80.9159}, "func": ()=>{this._onPressButton1()} },
-{"name": "sex", "place": {top: 109.171, left: 82.0384}, "func": ()=>{console.log("chat of sex")}},
-{"name": "plants", "place": {top: 25.319, left: -81.7774}, "func": ()=>{console.log("chat of plants")}},
-{"name": "immune system", "place": {top: 121.382, left: -82.8285}, "func": ()=>{console.log("chat of immune system")}}
-*/
 	// up
 	var listofparents = map_results.title.split(" - "); 
 	map_terms.parent = listofparents[listofparents.length - 2]
@@ -117,11 +59,8 @@ var getmap = function(key, map_results) {
 	return map_terms
 }; 
 
-
-
 //your routes here
 app.get('/messages/:message', function (req, res) {
-	// getinfo(encodeURI(req.params.message)); 
 	got("https://learn-anything.xyz/api/maps/?q=" + encodeURI(req.params.message))
 	.then(search_response => {
 		var search_results = JSON.parse(search_response.body); 
@@ -129,6 +68,9 @@ app.get('/messages/:message', function (req, res) {
 		if (search_results.length == 0) {
 			res.send(noresponse);
 			return  
+		} else if {
+			// exact match
+			obj = search_results.find(o => o.key === req.params.message);
 		} else {
 			obj = search_results[0]; // key n id
 		}
