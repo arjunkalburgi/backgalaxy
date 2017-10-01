@@ -80,7 +80,7 @@ var getmap = function(key, map_results) {
 
 
 //your routes here
-app.get('/messages:message', function (req, res) {
+app.get('/messages/:message', function (req, res) {
     res.send("Hello "+req.params.message+"!");
     /*
 	client.message(req.params.message, {})
