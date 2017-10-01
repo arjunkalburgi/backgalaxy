@@ -3,10 +3,11 @@ var app = express();
 // var got = require('got');
 
 // message stuff
-/*const {Wit, log} = require('node-wit');
-const client = new Wit({
-  accessToken: ""
-});
+/*
+// const {Wit, log} = require('node-wit');
+// const client = new Wit({
+//   accessToken: ""
+// });
 const templateresponse = {"message": "", "explore_terms": {}}; 
 */
 
@@ -79,8 +80,8 @@ var getmap = function(key, map_results) {
 
 
 //your routes here
-app.get('/messages', function (req, res) {
-    res.send("Hello messages!");
+app.get('/messages:message', function (req, res) {
+    res.send("Hello "+req.params.message+"!");
     /*
 	client.message(req.params.message, {})
 	.then((raw_data) => {
